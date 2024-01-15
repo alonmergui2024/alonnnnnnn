@@ -26,3 +26,4 @@ if x == 1:
     switch_page("page1")
 elif x == 2:
     switch_page("page2")
+    
