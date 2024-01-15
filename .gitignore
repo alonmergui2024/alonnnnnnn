@@ -1,0 +1,11 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore virtual environment directory
+venv/
+
+# Ignore log files
+*.log
+
+# Ignore secret configuration file
+secret_config.ini
