@@ -1,12 +1,47 @@
 import streamlit as st
 import requests
+from bs4 import BeautifulSoup
 import pandas as pd
-import time
-import datetime
+from streamlit_option_menu import option_menu
 from streamlit_extras.switch_page_button import switch_page
 import random
 import json
 import os
+
+URL = "https://www.espn.com/nba/teams"
+header = {
+    'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+}
+response = requests.get(URL, headers=header)
+s = BeautifulSoup(response.content, "html.parser")
+results = s.find(id="fitt-analytics")
+
+
+class Autocomplete:
+    def __init__(self, team):
+        self.team = team
+
+    def suggest(self, prefix):
+        prefix = prefix.lower()
+        suggestions = []
+        for word in self.team:
+            for miniword in word.split(" "):
+                if miniword.lower().startswith(prefix.lower()) or miniword.lower() == prefix.lower():
+                    suggestions.append(word)
+                    break
+
+        return suggestions
+
+
+if results:
+    team = []
+    team.append("None")
+    teams = results.find_all('h2', class_='di clr-gray-01 h5')
+    for i in teams:
+        team.append(i.text)
+    autocomplete_engine = Autocomplete(team)
+
 
 check = False
 
@@ -111,7 +146,7 @@ def homepage():
         st.header("Sign Up")
         username = st.text_input("Enter your username:")
         password = st.text_input("Enter your password:", type="password")
-        fav_team = st.text_input("Enter your favorite team (optional):")
+        fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
         if st.button("Sign Up"):
             sign_up(username, password, fav_team)
             return username,password,fav_team
@@ -133,14 +168,22 @@ def homepage():
 
 def main():
     def Account():
-        st.chat_message("hi")
-    page = st.sidebar.radio("Select Page", ["Account", "Information", "real time stock investment"])
-    if page == "Account":
-        Account()
-    elif page == "Information":
-        pass
-    elif page == "real time stock investment":
-        pass
+        selected2 = option_menu(None, ["Home", "Upload", "Tasks", 'Settings'], 
+            icons=['house', 'cloud-upload', "list-task", 'gear'], 
+            menu_icon="cast", default_index=0, orientation="horizontal")
+        st.title(selected2)
+        if selected2 == "Home":
+            # Initial text
+            dynamic_text = st.text
+
+            # Button to update the text
+            if st.button("Update Text"):
+                # Update the text when the button is clicked
+                dynamic_text = st.text_input("This is the initial text.")
+
+
+    Account()
+
 
 if 'runpage' not in st.session_state:
     st.session_state.runpage = homepage

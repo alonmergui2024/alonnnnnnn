@@ -1,5 +1,7 @@
 import streamlit as st
 import requests
+from bs4 import BeautifulSoup
+import requests
 import pandas as pd
 import time
 import datetime
@@ -7,6 +9,39 @@ from streamlit_extras.switch_page_button import switch_page
 import random
 import json
 import os
+
+URL = "https://www.espn.com/nba/teams"
+header = {
+    'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+}
+response = requests.get(URL, headers=header)
+s = BeautifulSoup(response.content, "html.parser")
+results = s.find(id="fitt-analytics")
+
+
+class Autocomplete:
+    def __init__(self, team):
+        self.team = team
+
+    def suggest(self, prefix):
+        prefix = prefix.lower()
+        suggestions = []
+        for word in self.team:
+            for miniword in word.split(" "):
+                if miniword.lower().startswith(prefix.lower()) or miniword.lower() == prefix.lower():
+                    suggestions.append(word)
+                    break
+
+        return suggestions
+
+
+if results:
+    team = []
+    teams = results.find_all('h2', class_='di clr-gray-01 h5')
+    for i in teams:
+        team.append(i.text)
+    autocomplete_engine = Autocomplete(team)
 
 check = False
 
@@ -178,7 +213,9 @@ def homepage():
         st.header("Sign Up")
         username = st.text_input("Enter your username:")
         password = st.text_input("Enter your password:", type="password")
-        fav_team = st.text_input("Enter your favorite team (optional):")
+        option = st.selectbox('Enter your favorite team (optional):',
+        ('None','ddsd','sdds'))
+        st.write('You selected:', option)
         if st.button("Sign Up"):
             sign_up(username, password, fav_team)
             return username,password,fav_team
