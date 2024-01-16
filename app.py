@@ -50,8 +50,8 @@ a = False
 
 
 st.set_page_config(
-    page_title="Stocks analyzer",
-    page_icon=r"icons8-stock-48.png",
+    page_title="Basketball",
+    page_icon=r":basketball:",
 
 )
 
@@ -140,10 +140,10 @@ def Login(username, password):
 def homepage():
     st.title("BasketBall - Team Information")
 
-    page = st.sidebar.radio("Navigation", ["Sign Up", "Login"])
-
-    if page == "Sign Up":
-        st.header("Sign Up")
+    selected2 = option_menu(None, ["Sign Up", "Login"], 
+            menu_icon="cast", default_index=0, orientation="horizontal")
+    st.title(selected2)
+    if selected2 == "Sign Up":
         username = st.text_input("Enter your username:")
         password = st.text_input("Enter your password:", type="password")
         fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
@@ -152,8 +152,7 @@ def homepage():
             return username,password,fav_team
         
 
-    elif page == "Login":
-        st.header("Login")
+    elif selected2 == "Login":
         username = st.text_input("Enter your username:")
         password = st.text_input("Enter your password:", type="password")
         if st.button("Login"):
@@ -168,8 +167,8 @@ def homepage():
 
 def main():
     def Account():
-        selected2 = option_menu(None, ["Home", "Upload", "Tasks", 'Settings'], 
-            icons=['house', 'cloud-upload', "list-task", 'gear'], 
+        selected2 = option_menu(None, ["Account", "this week games", "all sesson games"], 
+            icons=['house', 'celender', '🌎'], 
             menu_icon="cast", default_index=0, orientation="horizontal")
         st.title(selected2)
         if selected2 == "Home":
