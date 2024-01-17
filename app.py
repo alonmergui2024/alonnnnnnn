@@ -128,7 +128,7 @@ def Login(username, password):
                     st.success(f"Welcome, {username}! favorite team: {fav_team}")
                 else:
                     fav_team = "None"
-                    st.success(f"Welcome, {username}!")
+                    st.success(f"Welcome, {username}! favorite team: {fav_team}")
                 st.session_state.runpage = main
                 st.experimental_rerun()
             else:
@@ -172,19 +172,33 @@ def main():
             menu_icon="cast", default_index=0, orientation="horizontal")
         st.title(selected2)
         if selected2 == "Home":
-            # Initial text
-            dynamic_text = st.text
+            st.text("Username:")
+            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
+            st.text("Password")
+            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
+            st.text("Favorite team")
+            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
 
-            # Button to update the text
-            if st.button("Update Text"):
-                # Update the text when the button is clicked
-                dynamic_text = st.text_input("This is the initial text.")
+            if st.button("Edit Information"):
+                st.text("Enter new username:")
+                username = st.text_input()
+                st.text("Enter new password:")
+                password = st.text_input( type="password")
+                st.text("Enter new favorite team:")
+                fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
+
+            if st.button("Confirm Changes"):
+                st.text("Username:")
+                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
+                st.text("Password")
+                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
+                st.text("Favorite team")
+                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
+                st.success("Information updated successfully!")
+            print(inf)
 
 
     Account()
 
 
-if 'runpage' not in st.session_state:
-    st.session_state.runpage = homepage
-
-st.session_state.runpage()
+inf = homepage()
