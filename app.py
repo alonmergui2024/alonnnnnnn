@@ -163,42 +163,40 @@ def homepage():
                     fav_team = user_data.get("fav_team")
                 return username, password, fav_team
 
-            
+def Account(username, password, fav_team):
+    st.text("Username:")
+    st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
+    st.text("Password")
+    st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True)
+    st.text("Favorite team")
+    st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
 
-def main():
-    def Account():
+    if st.button("Edit Information"):
+        st.text("Enter new username:")
+        username = st.text_input()
+        st.text("Enter new password:")
+        password = st.text_input( type="password")
+        st.text("Enter new favorite team:")
+        fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
+
+    if st.button("Confirm Changes"):
+        st.text("Username:")
+        st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
+        st.text("Password")
+        st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
+        st.text("Favorite team")
+        st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
+        st.success("Information updated successfully!")            
+
+def main(username, password, fav_team):
         selected2 = option_menu(None, ["Account", "this week games", "all sesson games"], 
             icons=['house', 'celender', '🌎'], 
             menu_icon="cast", default_index=0, orientation="horizontal")
         st.title(selected2)
-        if selected2 == "Home":
-            st.text("Username:")
-            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
-            st.text("Password")
-            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
-            st.text("Favorite team")
-            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
+        if selected2 == "Account":
+            Account(username, password, fav_team)
+            
 
-            if st.button("Edit Information"):
-                st.text("Enter new username:")
-                username = st.text_input()
-                st.text("Enter new password:")
-                password = st.text_input( type="password")
-                st.text("Enter new favorite team:")
-                fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
-
-            if st.button("Confirm Changes"):
-                st.text("Username:")
-                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
-                st.text("Password")
-                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
-                st.text("Favorite team")
-                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
-                st.success("Information updated successfully!")
-            print(inf)
-
-
-    Account()
-
-
-inf = homepage()
+if 'runpage' not in st.session_state:
+    st.session_state.runpage = homepage
+st.session_state.runpage()

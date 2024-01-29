@@ -1,10 +1,8 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-import requests
 import pandas as pd
-import time
-import datetime
+from streamlit_option_menu import option_menu
 from streamlit_extras.switch_page_button import switch_page
 import random
 import json
@@ -38,10 +36,12 @@ class Autocomplete:
 
 if results:
     team = []
+    team.append("None")
     teams = results.find_all('h2', class_='di clr-gray-01 h5')
     for i in teams:
         team.append(i.text)
     autocomplete_engine = Autocomplete(team)
+
 
 check = False
 
@@ -50,8 +50,8 @@ a = False
 
 
 st.set_page_config(
-    page_title="Stocks analyzer",
-    page_icon=r"icons8-stock-48.png",
+    page_title="Basketball",
+    page_icon=r":basketball:",
 
 )
 
@@ -67,73 +67,6 @@ def click_button():
 json_file_path = "users.json"
 
 
-def stockanalyzer():
-    st.title("Stock Analyzer")
-    company_name = st.text_input("Enter company name or item:")
-
-    min_date = datetime.date(2022, 1, 1)
-    max_date = datetime.datetime.now() - datetime.timedelta(days=16)
-    start_date = st.date_input("Select start date:",
-                               min_value=min_date,
-                               max_value=max_date,
-                               value=min_date)
-
-    end_date = datetime.datetime.now().date()
-
-    st.button('Analyze', on_click=click_button)
-    if st.session_state.clicked:
-        if company_name == "":
-            st.warning("You have to enter a stock or a company name.")
-        else:
-            if company_name.upper() == "APPLE" or company_name.upper() == "AAPL" or company_name.upper() == "APLE":
-                stock_symbol = "AAPL"
-            elif company_name.upper() == "NVDA" or company_name.upper() == "NVIDIA" or company_name.upper() == "NVIDA":
-                stock_symbol = "NVDA"
-            else:
-                with st.spinner("Fetching stock symbol..."):
-                    stock_symbol = get_stock_symbol(company_name)
-            if stock_symbol:
-                st.title("Stock Price Visualization App")
-                st.write(f"Displaying stock data for {stock_symbol}")
-
-                with st.spinner("Fetching stock data..."):
-                    stock_data = get_stock_data(stock_symbol, start_date, end_date)
-
-                if stock_data is not None:
-                    plot_stock_data(stock_data)
-                    lowest_point = stock_data['Close'].min()
-                    highest_point = stock_data['Close'].max()
-                    chart_data = pd.DataFrame({
-                        'Date': stock_data.index,
-                        'Stock Price': stock_data['Close'],
-                        'Lowest Point': lowest_point,
-                        'Highest Point': highest_point
-                    })
-                    st.line_chart(chart_data.set_index('Date'))
-                    st.success(f"Highest Stock Price: ${round(highest_point, 2)}")
-                    st.warning(f"Lowest Stock Price: ${round(lowest_point, 2)}")
-                    try:
-                        with st.spinner("Performing predictions..."):
-                            predicted_value_lr = predict_tomorrows_stock_value_linear_regression(stock_data)
-                            predicted_value_lstm = predict_tomorrows_stock_value_lstm(stock_data)
-                            time.sleep(1)
-
-                        st.write(f"Approximate tomorrow's stock value (Linear Regression): {predicted_value_lr:.2f}$")
-                        st.write(f"Approximate tomorrow's stock value (LSTM): {predicted_value_lstm:.2f}$")
-
-                        with st.expander("💡 What is LSTM?"):
-                            display_lstm_info()
-
-                        with st.expander("💡 What is Linear Regression?"):
-                            st.write("Linear Regression Simulation:")
-                            linear_Regression(stock_data)
-
-
-
-                    except:
-                        st.warning("Not enough info for an AI approximation, please try an earlier date.")
-            else:
-                st.warning(f"Stock doesn't exist.\ntry again or check your input.")
 
 def user_exists(username):
     if os.path.exists(json_file_path):
@@ -176,7 +109,9 @@ def sign_up(username, password, fav_team):
         users[username] = user_data
         with open(json_file_path, "w") as file:
             json.dump(users, file)
-        st.success("You have successfully signed up!")
+        st.session_state.runpage = main
+        st.experimental_rerun()
+
 
 
 
@@ -193,53 +128,77 @@ def Login(username, password):
                     st.success(f"Welcome, {username}! favorite team: {fav_team}")
                 else:
                     fav_team = "None"
-                    st.success(f"Welcome, {username}!")
+                    st.success(f"Welcome, {username}! favorite team: {fav_team}")
+                st.session_state.runpage = main
+                st.experimental_rerun()
             else:
                 st.warning("Incorrect password. Please check for spelling and try again.")
     else:
         st.warning("User does not exist. Please sign up or check the username.")
 
-def Account():
-    st.title("hi")
 
 def homepage():
     st.title("BasketBall - Team Information")
-    want = st.button("hi")
-    if want:
-        switch_page("Login")
-    page = st.sidebar.radio("Navigation", ["Sign Up", "Login"])
-
-    if page == "Sign Up":
-        st.header("Sign Up")
-        username = st.text_input("Enter your username:")
-        password = st.text_input("Enter your password:", type="password")
-        option = st.selectbox('Enter your favorite team (optional):',
-        ('None','ddsd','sdds'))
-        st.write('You selected:', option)
-        if st.button("Sign Up"):
-            sign_up(username, password, fav_team)
-            return username,password,fav_team
-
-    elif page == "Login":
-        st.header("Login")
-        username = st.text_input("Enter your username:")
-        password = st.text_input("Enter your password:", type="password")
-        if st.button("Login"):
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    def Login():
+        col1.title("Login")
+        if col6.button("Signup",on_click=click_button):
+            username = st.text_input("Enter your username:")
+            password = st.text_input("Enter your password:", type="password")
+            fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
+            if st.button("Sign Up"):
+                sign_up(username, password, fav_team)
+                return username,password,fav_team
+        
+        st.table()
+        if st.button("Login",on_click=click_button):
             if Login(username, password):
                 with open(json_file_path, "r") as file:
                     users = json.load(file)
                     user_data = users.get(username)
                     fav_team = user_data.get("fav_team")
                 return username, password, fav_team
-            if username and password:
-                st.sidebar.radio("Select Page", ["Information", "real time stock investment"])
+    Login()
+            
+        
 
 
+            
 
-page = st.sidebar.radio("Select Page", ["Home", "Information", "real time stock investment"])
-if page == "Home":
-    homepage()
-elif page == "Information":
-    pass
-elif page == "real time stock investment":
-    pass
+def main():
+    def Account():
+        selected2 = option_menu(None, ["Account", "this week games", "all sesson games"], 
+            icons=['house', 'celender', '🌎'], 
+            menu_icon="cast", default_index=0, orientation="horizontal")
+        st.title(selected2)
+        if selected2 == "Home":
+            st.text("Username:")
+            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
+            st.text("Password")
+            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
+            st.text("Favorite team")
+            st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
+
+            if st.button("Edit Information"):
+                st.text("Enter new username:")
+                username = st.text_input()
+                st.text("Enter new password:")
+                password = st.text_input( type="password")
+                st.text("Enter new favorite team:")
+                fav_team = st.selectbox('Enter your favorite team (optional): ',(team))
+
+            if st.button("Confirm Changes"):
+                st.text("Username:")
+                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{username}</div>", unsafe_allow_html=True)
+                st.text("Password")
+                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{password}</div>", unsafe_allow_html=True, type="password")
+                st.text("Favorite team")
+                st.markdown(f"<div style='background-color: #f4f4f4; padding: 10px; border-radius: 5px;'>{fav_team}</div>", unsafe_allow_html=True)
+                st.success("Information updated successfully!")
+            print(inf)
+
+
+    Account()
+
+
+inf = homepage()
