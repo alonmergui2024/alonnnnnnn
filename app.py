@@ -140,9 +140,7 @@ def Login(username, password):
 def homepage():
     st.title("BasketBall - Team Information")
 
-    selected2 = option_menu(None, ["Sign Up", "Login"], 
-            menu_icon="cast", default_index=0, orientation="horizontal")
-    st.title(selected2)
+    selected2 = st.sidebar("Sign Up","Login")
     if selected2 == "Sign Up":
         username = st.text_input("Enter your username:")
         password = st.text_input("Enter your password:", type="password")
