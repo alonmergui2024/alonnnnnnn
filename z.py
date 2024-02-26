@@ -241,17 +241,9 @@ if suggestions:
         teams2 = results1.find_all("td", class_="colspan__col Table__TD")
         times = results1.find_all("td", class_="date__col Table__TD")
         games = list(zip(teams1, teams2, times))
-        for game in games:
-            for element in game:
-                print(element.text)
-        '''
         for x, y, z in games:
             team1 = x.text.replace('@', '').strip().split()
             team2 = y.text.replace('@', '').strip().split()
             time = z.text.strip()
-            suggestions2 = autocomplete_engine2.suggest(team1[0])
-            suggestions3 = autocomplete_engine2.suggest(team2[1])
-            if suggestions3 or suggestions2:
-                g = f'{x.text}{y.text} {time}'
-                print(g.replace('@', 'vs'))
-'''
+            g = f'{x.text}{y.text} {time}'
+            print(g.replace('@', 'vs'))
