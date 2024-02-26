@@ -241,12 +241,9 @@ if suggestions:
         teams2 = results1.find_all("td", class_="colspan__col Table__TD")
         times = results1.find_all("td", class_="date__col Table__TD")
         games = list(zip(teams1, teams2, times))
-        table = [element for element in table if
-                 "teams__col Table__TD" and "teams__col Table__TD" and "leaders__col Table__TD" and "broadcast__col Table__TD" and "tickets__col Table__TD" not in element.attrs.get(
-                     "class", [])]
-        '''
-        for i in table:
-            print(i.text.strip())
+        for game in games:
+            for element in game:
+                print(element.text)
         '''
         for x, y, z in games:
             team1 = x.text.replace('@', '').strip().split()
@@ -257,3 +254,4 @@ if suggestions:
             if suggestions3 or suggestions2:
                 g = f'{x.text}{y.text} {time}'
                 print(g.replace('@', 'vs'))
+'''
