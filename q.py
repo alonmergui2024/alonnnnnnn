@@ -59,4 +59,7 @@ s1 = BeautifulSoup(response1.content, "html.parser")
 results1 = s1.find(id="fittPageContainer")
 table = results1.find_all("tbody", class_="Table__TBODY")
 t = table[0].find_all("td", class_="events__col Table__TD")
-print(len(t))
+week = []
+for i in range(len(t)):
+    week.append["y"](table[0].find_all("td", class_="events__col Table__TD")[i].text + " VS "+ table[0].find_all("td", class_="colspan__col Table__TD")[i].text.replace("@", ""))
+print(week)
