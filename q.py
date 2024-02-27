@@ -43,9 +43,20 @@ class Basketball:
         self.__games = list(zip(self.__teams1, self.__teams2, self.__times))
         for self.__x, self.__y, self.__z in self.__games:
             self.__time = self.__z.text.strip()
-            self.__g = f'{self.__x.text}{self.__y.text} {self.__time}'
-            self.__week.append(self.__g.replace('@', 'vs'))
-        return self.__week
+            self.__g = (f'{self.__x.text}{self.__y.text} {self.__time}').replace('@', 'vs')
+            print(self.__g)
 
-base = Basketball()
-i =base.this_week("Toronto")
+
+header = {
+            'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+}
+current_date = datetime.now()
+formatted_date = current_date.strftime("%Y%m%d")
+url = f"https://www.espn.com/nba/schedule/_/date/{formatted_date}"
+response1 = requests.get(url, headers=header)
+s1 = BeautifulSoup(response1.content, "html.parser")
+results1 = s1.find(id="fittPageContainer")
+table = results1.find_all("tbody", class_="Table__TBODY")
+t = table[0].find_all("td", class_="events__col Table__TD")
+print(len(t))
