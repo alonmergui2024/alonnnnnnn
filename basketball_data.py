@@ -48,12 +48,33 @@ class Basketball:
         for self.__item in range(len(self.__table)):
             self.__t = self.__table[self.__item].find_all("td", class_="events__col Table__TD")
             for self.__i in range(len(self.__t)):
-                self.__week.append({self.__table[self.__item].find_all("td", class_="events__col Table__TD")[self.__i].text , self.__table[self.__item].find_all("td", class_="colspan__col Table__TD")[self.__i].text.replace("@", "")[4::] , self.__times[self.__item].text})
+                self.__week.append([self.__table[self.__item].find_all("td", class_="events__col Table__TD")[self.__i].text , self.__table[self.__item].find_all("td", class_="colspan__col Table__TD")[self.__i].text.replace("@", "")[4::] , self.__times[self.__item].text])
         return self.__week
     
-t = Basketball()
-week = t.this_week()
-print(week)
+    
+    def this_week_team(self,team):
+        self.__team = team
+        self.__week_team = []
+        self.__week = self.this_week()
+        for self.__item in self.__week:
+            if self.__item[0] == self.__team or self.__item[1] == self.__team:
+                self.__week_team.append([self.__item[0] , self.__item[1] , self.__item[2]])
+        return self.__week_team    
+
+    def rewrite(self,item):
+        self.__item = item
+        self.__output = ""
+        if type(self.__item) == list:
+            for self.__g in range(len(self.__item)):
+                if len(self.__item[self.__g]) != 3:
+                    return "Error: Each item in the list must have exactly 3 elements"
+            for self.__i in self.__item:
+                self.__output += self.__i[0] + " VS "+ self.__i[1]+ " at " + self.__i[2] + "\n"
+            return self.__output
+        else:
+            return "Error: Input is not a list"
+
+
 
 
 
