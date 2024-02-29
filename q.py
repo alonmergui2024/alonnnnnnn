@@ -53,7 +53,7 @@ header = {
 }
 current_date = datetime.now()
 yesterday = current_date - timedelta(days=1)
-formatted_date = current_date.strftime("%Y%m%d")
+formatted_date = yesterday.strftime("%Y%m%d")
 url = f"https://www.espn.com/nba/schedule/_/date/{formatted_date}"
 response1 = requests.get(url, headers=header)
 s1 = BeautifulSoup(response1.content, "html.parser")
