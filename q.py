@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Basketball:
     def __init__(self):
@@ -52,14 +52,19 @@ header = {
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
 }
 current_date = datetime.now()
+yesterday = current_date - timedelta(days=1)
 formatted_date = current_date.strftime("%Y%m%d")
 url = f"https://www.espn.com/nba/schedule/_/date/{formatted_date}"
 response1 = requests.get(url, headers=header)
 s1 = BeautifulSoup(response1.content, "html.parser")
 results1 = s1.find(id="fittPageContainer")
 table = results1.find_all("tbody", class_="Table__TBODY")
+times = results1.find_all("div", class_="Table__Title")
 t = table[0].find_all("td", class_="events__col Table__TD")
 week = []
+for i in range(len(table)):
+    print(times[i].text)
+#for i in range(len(week)):
+#    print(week[i])
 for i in range(len(t)):
-    week.append["y"](table[0].find_all("td", class_="events__col Table__TD")[i].text + " VS "+ table[0].find_all("td", class_="colspan__col Table__TD")[i].text.replace("@", ""))
-print(week)
+    print(table[0].find_all("td", class_="events__col Table__TD")[i].text + " VS "+ table[0].find_all("td", class_="colspan__col Table__TD")[i].text.replace("@", "")[4::])
