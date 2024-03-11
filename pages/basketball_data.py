@@ -62,35 +62,6 @@ class Basketball:
             if self.__item[0] == self.__team or self.__item[1] == self.__team:
                 self.__week_team.append([self.__item[0] , self.__item[1] , self.__item[2]])
         return self.__week_team    
-    
-    def this_year(self):
-        self.__date = datetime.now()
-        self.__year = self.__date.year
-        self.__jan_first = datetime(self.__year, 1, 1)
-        self.__week = []
-
-        while self.__jan_first.year == 2024:
-            self.__jan = self.__jan_first - timedelta(days=1)
-            self.__url = f"https://www.espn.com/nba/schedule/_/date/{self.__jan.strftime("%Y%m%d")}"
-            self.__url1 = f"https://www.espn.com/nba/schedule/_/date/{self.__jan_first.strftime("%Y%m%d")}"
-            self.__response1 = requests.get(self.__url, headers=self.__header)
-            self.__response2 = requests.get(self.__url1, headers=self.__header)
-            self.__s1 = BeautifulSoup(self.__response1.content, "html.parser")
-            self.__s2 = BeautifulSoup(self.__response2.content, "html.parser")
-            self.__results1 = self.__s1.find(id="fittPageContainer")
-            self.__results2 = self.__s2.find(id="fittPageContainer")
-            self.__table = self.__results1.find_all("tbody", class_="Table__TBODY")
-            self.__times = self.__results2.find_all("div", class_="Table__Title")
-            for self.__item in range(len(self.__table)):
-                self.__t = self.__table[self.__item].find_all("td", class_="events__col Table__TD")
-                for self.__i in range(len(self.__t)):
-                    self.__week.append([self.__table[self.__item].find_all("td", class_="events__col Table__TD")[self.__i].text , self.__table[self.__item].find_all("td", class_="colspan__col Table__TD")[self.__i].text.replace("@", "")[4::] , self.__times[self.__item].text])
-            self.__jan_first += timedelta(weeks=1)
-        return self.__week
-            
-        
-
-
 
 
     def rewrite(self,item):
